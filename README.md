@@ -4,9 +4,13 @@
 
 To run this project, type:
 
+`dotnet run`
+
 ## Running with Hot Reload
 
 To run with "Hot reload", type:
+
+`dotnet watch run`
 
 ## Accessing the API
 
