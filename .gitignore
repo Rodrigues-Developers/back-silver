@@ -1,0 +1,90 @@
+# User-specific files
+.idea/
+.vscode/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer
+*.cab
+*.msi
+*.msm
+*.msp
+
+# .NET build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]istro/
+[Dd]eploy/
+[Dd]ebug|Release/
+x64/
+x86/
+[Aa]rms/
+[Aa]rms64/
+[Aa]rms32/
+[Aa]rms32/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# .NET Core Debugging Files
+.vs2019/
+.vs2017/
+.vs2015/
+.vs/
+
+# Rider
+.idea/
+
+# JetBrains
+.idea/
+
+# npm packages
+node_modules/
+
+# dotenv files
+.env
+
+# MongoDB files
+*.log
+*.bak
+
+# Azure Functions
+bin/
+obj/
+
+# MongoDB Database files
+*.bak
+*.log
+
+# Others
+.vscode/

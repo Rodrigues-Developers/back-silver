@@ -1,0 +1,6 @@
+@back_silver_HostAddress = http://localhost:5016
+
+GET {{back_silver_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
