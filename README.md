@@ -1,5 +1,11 @@
 # back-silver
 
+## Install the dependencies
+
+`dotnet restore`
+
+## Configure the .env file in the root of the project
+
 ## Running the Project
 
 To run this project, type:
