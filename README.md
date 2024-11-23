@@ -1,9 +1,13 @@
 # back-silver
 
-To run this project type:
-dotnet run
+## Running the Project
 
-To run with "Hot reload" type
-dot net watch run
+To run this project, type:
 
-Then you can access the api via [localhost:5016](http://localhost:5016/swagger/index.html)
+## Running with Hot Reload
+
+To run with "Hot reload", type:
+
+## Accessing the API
+
+Then you can access the API via [localhost:5016](http://localhost:5016/swagger/index.html).
