@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using YourProject.Models;
 using YourProject.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace YourProject.Controllers {
   [ApiController]
@@ -13,6 +14,7 @@ namespace YourProject.Controllers {
     }
 
     [HttpGet]
+    [Authorize] // This secures the endpoint
     public async Task<ActionResult<List<Product>>> Get() {
       return await _productService.GetAsync();
     }
@@ -28,12 +30,14 @@ namespace YourProject.Controllers {
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create(Product product) {
       await _productService.CreateAsync(product);
       return CreatedAtAction(nameof(Get), new { id = product.Id }, product);
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> Update(string id, Product updatedProduct) {
       var product = await _productService.GetByIdAsync(id);
 
@@ -46,6 +50,7 @@ namespace YourProject.Controllers {
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> Delete(string id) {
       var product = await _productService.GetByIdAsync(id);
 
