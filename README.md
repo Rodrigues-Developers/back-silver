@@ -1,5 +1,9 @@
 # back-silver
 
+## Install .NET 9 SDK
+
+`https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-9.0.100-windows-x64-installer`
+
 ## Install the dependencies
 
 `dotnet restore`
