@@ -35,16 +35,17 @@ namespace YourProject.Controllers {
       return CreatedAtAction(nameof(Get), new { id = product.Id }, product);
     }
 
-    [HttpPost("auth/token")]
-    [AllowAnonymous] // Typically, requesting a token doesn't require prior authentication.
-    public async Task<IActionResult> RequestAuthToken() {
-      try {
-        var token = await _productService.RequestAuthTokenAsync();
-        return Ok(new { Token = token });
-      } catch (Exception ex) {
-        return StatusCode(500, new { Error = ex.Message });
-      }
-    }
+    // Token is already generated once the user logs in. So we don't need this post request
+    // [HttpPost("auth/token")]
+    // [AllowAnonymous] // Typically, requesting a token doesn't require prior authentication.
+    // public async Task<IActionResult> RequestAuthToken() {
+    //   try {
+    //     var token = await _productService.RequestAuthTokenAsync();
+    //     return Ok(new { Token = token });
+    //   } catch (Exception ex) {
+    //     return StatusCode(500, new { Error = ex.Message });
+    //   }
+    // }
 
     [HttpPut("{id}")]
     [Authorize]

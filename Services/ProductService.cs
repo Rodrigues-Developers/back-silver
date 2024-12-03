@@ -30,28 +30,29 @@ public class ProductService {
     }
   }
 
-  public async Task<string> RequestAuthTokenAsync() {
-    using var httpClient = new HttpClient();
-    var request = new HttpRequestMessage(HttpMethod.Post, authServiceTokenURL) {
-      Content = new FormUrlEncodedContent(new Dictionary<string, string> {
-        { "audience", "silver-backend-ident" },
-        { "grant_type", "client_credentials" },
-        { "client_id", authClientID },
-        { "client_secret", authClientSecret }
-      })
-    };
+  // Token is already generated once the user logs in. So we don't need this post request
+  // public async Task<string> RequestAuthTokenAsync() {
+  //   using var httpClient = new HttpClient();
+  //   var request = new HttpRequestMessage(HttpMethod.Post, authServiceTokenURL) {
+  //     Content = new FormUrlEncodedContent(new Dictionary<string, string> {
+  //       { "audience", "silver-backend-ident" },
+  //       { "grant_type", "client_credentials" },
+  //       { "client_id", authClientID },
+  //       { "client_secret", authClientSecret }
+  //     })
+  //   };
 
-    var response = await httpClient.SendAsync(request);
+  //   var response = await httpClient.SendAsync(request);
 
-    if (!response.IsSuccessStatusCode) {
-      throw new Exception($"Failed to get auth token. Status: {response.StatusCode}");
-    }
+  //   if (!response.IsSuccessStatusCode) {
+  //     throw new Exception($"Failed to get auth token. Status: {response.StatusCode}");
+  //   }
 
-    var responseContent = await response.Content.ReadAsStringAsync();
-    var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+  //   var responseContent = await response.Content.ReadAsStringAsync();
+  //   var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
 
-    return tokenResponse?.AccessToken;
-  }
+  //   return tokenResponse?.AccessToken;
+  // }
 
   public async Task<List<Product>> GetAsync() =>
       await _products.Find(_ => true).ToListAsync();
