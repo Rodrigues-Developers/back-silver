@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using YourProject.Models;
-using YourProject.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace YourProject.Controllers {
@@ -34,6 +33,17 @@ namespace YourProject.Controllers {
     public async Task<IActionResult> Create(Product product) {
       await _productService.CreateAsync(product);
       return CreatedAtAction(nameof(Get), new { id = product.Id }, product);
+    }
+
+    [HttpPost("auth/token")]
+    [AllowAnonymous] // Typically, requesting a token doesn't require prior authentication.
+    public async Task<IActionResult> RequestAuthToken() {
+      try {
+        var token = await _productService.RequestAuthTokenAsync();
+        return Ok(new { Token = token });
+      } catch (Exception ex) {
+        return StatusCode(500, new { Error = ex.Message });
+      }
     }
 
     [HttpPut("{id}")]

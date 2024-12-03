@@ -1,5 +1,4 @@
 using dotenv.net; // Ensure you are using the correct namespace
-using YourProject.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -36,6 +35,16 @@ builder.Services.AddSwaggerGen(c => {
 });
 builder.Services.AddSingleton<ProductService>();
 
+// Configure CORS policy
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAngularApp", policy => {
+        policy.WithOrigins("http://localhost:4200") // Angular's development server
+              .AllowAnyMethod()                   // Allow all HTTP methods (GET, POST, etc.)
+              .AllowAnyHeader()                   // Allow all headers
+              .AllowCredentials();                // Allow cookies and authentication headers
+    });
+});
+
 // Configure JWT authentication
 var authDomain = Environment.GetEnvironmentVariable("AUTH_DOMAIN");
 var authAudience = Environment.GetEnvironmentVariable("AUTH_AUDIENCE");
@@ -63,6 +72,9 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+
+// Enable CORS globally
+app.UseCors("AllowAngularApp");
 
 // Enable authentication and authorization
 app.UseAuthentication();
