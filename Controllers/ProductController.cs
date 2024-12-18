@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using YourProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using MongoDB.Bson;
 
 namespace YourProject.Controllers {
   [ApiController]
@@ -13,7 +14,6 @@ namespace YourProject.Controllers {
     }
 
     [HttpGet]
-    [Authorize] // This secures the endpoint
     public async Task<ActionResult<List<Product>>> Get() {
       return await _productService.GetAsync();
     }
@@ -30,22 +30,15 @@ namespace YourProject.Controllers {
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Create(Product product) {
+    public async Task<IActionResult> Create([FromBody] Product product) {
+      // Ensure MongoDB generates a unique Id if it's not provided in the request
+      if (string.IsNullOrEmpty(product.Id)) {
+        product.Id = ObjectId.GenerateNewId().ToString();
+      }
+
       await _productService.CreateAsync(product);
       return CreatedAtAction(nameof(Get), new { id = product.Id }, product);
     }
-
-    // Token is already generated once the user logs in. So we don't need this post request
-    // [HttpPost("auth/token")]
-    // [AllowAnonymous] // Typically, requesting a token doesn't require prior authentication.
-    // public async Task<IActionResult> RequestAuthToken() {
-    //   try {
-    //     var token = await _productService.RequestAuthTokenAsync();
-    //     return Ok(new { Token = token });
-    //   } catch (Exception ex) {
-    //     return StatusCode(500, new { Error = ex.Message });
-    //   }
-    // }
 
     [HttpPut("{id}")]
     [Authorize]

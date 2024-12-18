@@ -5,16 +5,19 @@ namespace YourProject.Models {
   public class Product {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)] // Map MongoDB ObjectId to C# string
-    public required string Id { get; set; }
+    public string? Id { get; set; } // Nullable to let MongoDB generate the Id
 
     [BsonElement("name")]
     public required string Name { get; set; }
+
+    [BsonElement("description")]
+    public string? Description { get; set; }
 
     [BsonElement("availability")]
     public bool Availability { get; set; }
 
     [BsonElement("price")]
-    public int Price { get; set; }
+    public float Price { get; set; }
 
     [BsonElement("category")]
     public required List<string> Category { get; set; }
