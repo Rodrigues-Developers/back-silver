@@ -16,6 +16,21 @@ To run this project, type:
 
 `dotnet run`
 
+## Install editorconfig for vscode
+
+Right click on the root of the project and click on "Generate .editorconfig" then copy this code and paste it in the .editorconfig file
+
+```editorconfig
+
+#  CSharp formatting rules:
+[*.cs]
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+
+```
+
 ## Running with Hot Reload
 
 To run with "Hot reload", type:
