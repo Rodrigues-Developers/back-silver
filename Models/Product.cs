@@ -23,6 +23,6 @@ namespace YourProject.Models {
     public required List<string> Category { get; set; }
 
     [BsonElement("image")]
-    public required string Image { get; set; }
+    public string? Image { get; set; }
   }
 }
