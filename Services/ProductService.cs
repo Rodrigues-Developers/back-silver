@@ -6,9 +6,6 @@ using MongoDB.Bson;
 public class ProductService {
   private readonly IMongoCollection<Product> _products;
 
-  private readonly string authClientID = Environment.GetEnvironmentVariable("AUTH_CLIENT_ID");
-  private readonly string authClientSecret = Environment.GetEnvironmentVariable("AUTH_CLIENT_SECRET");
-  private readonly string authServiceTokenURL = Environment.GetEnvironmentVariable("AUTH_SERVICE_TOKEN_URL");
   public ProductService(IConfiguration config) {
     try {
       // Retrieve values from environment variables

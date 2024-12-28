@@ -1,12 +1,13 @@
 using dotenv.net; // Ensure you are using the correct namespace
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Load environment variables
 DotEnv.Load(); // Automatically load variables from a .env file in the root directory
+
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -18,7 +19,7 @@ builder.Services.AddSwaggerGen(c => {
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter your Auth0 Bearer token below:",
+        Description = "Enter your Firebase Bearer token below:",
     });
 
     c.AddSecurityRequirement(
@@ -30,8 +31,8 @@ builder.Services.AddSwaggerGen(c => {
                 }
             },
             Array.Empty<string>()
-        }
-    });
+        }}
+    );
 });
 builder.Services.AddSingleton<ProductService>();
 
@@ -45,21 +46,10 @@ builder.Services.AddCors(options => {
     });
 });
 
-// Configure JWT authentication
-var authDomain = Environment.GetEnvironmentVariable("AUTH_DOMAIN");
-var authAudience = Environment.GetEnvironmentVariable("AUTH_AUDIENCE");
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => {
-        options.Authority = $"https://{authDomain}/";
-        options.Audience = authAudience;
-        options.TokenValidationParameters = new TokenValidationParameters {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true
-        };
-    });
+//Initialize Firebase Admin SDK
+FirebaseInitializer.Initialize();
+
 
 builder.Services.AddAuthorization();
 
