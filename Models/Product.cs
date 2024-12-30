@@ -21,5 +21,8 @@ namespace YourProject.Models {
 
     [BsonElement("category")]
     public required List<string> Category { get; set; }
+
+    [BsonElement("image")]
+    public string? Image { get; set; }
   }
 }

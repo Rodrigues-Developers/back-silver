@@ -89,3 +89,4 @@ obj/
 # Others
 .vscode/
 auth_config.json
+serviceAccountKey.json
