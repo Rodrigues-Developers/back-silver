@@ -73,6 +73,7 @@ node_modules/
 
 # dotenv files
 .env
+.env*
 
 # MongoDB files
 *.log

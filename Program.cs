@@ -39,7 +39,7 @@ builder.Services.AddSingleton<ProductService>();
 // Configure CORS policy
 builder.Services.AddCors(options => {
   options.AddPolicy("AllowAngularApp", policy => {
-    policy.WithOrigins("http://localhost:4200", "https://green-ocean-07e9ce00f.4.azurestaticapps.net", "https://zealous-coast-0d8c38f0f.4.azurestaticapps.net") // Angular's development server
+    policy.WithOrigins("http://localhost:4200", "https://thankful-stone-015c7bd1e.4.azurestaticapps.net") // Angular's development server
           .AllowAnyMethod()                   // Allow all HTTP methods (GET, POST, etc.)
           .AllowAnyHeader()                   // Allow all headers
           .AllowCredentials();                // Allow cookies and authentication headers
