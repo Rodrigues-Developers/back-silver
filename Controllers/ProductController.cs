@@ -127,6 +127,13 @@ namespace YourProject.Controllers {
         return Unauthorized($"Invalid token: {ex.Message}");
       }
     }
+
+    [HttpGet("has-category/{id}")]
+    public async Task<ActionResult<bool>> HasCategory(string id) {
+      bool exists = await _productService.AnyProductHasCategoryAsync(id);
+      return Ok(exists);
+    }
+
   }
 
 }

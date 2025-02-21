@@ -49,4 +49,9 @@ public class ProductService {
   public async Task DeleteAsync(string id) =>
       await _products.DeleteOneAsync(p => p.Id == id);
 
+  public async Task<bool> AnyProductHasCategoryAsync(string categoryID) {
+    var filter = Builders<Product>.Filter.AnyIn(p => p.Category, new List<string> { categoryID });
+    return await _products.Find(filter).AnyAsync();
+  }
+
 }
