@@ -86,11 +86,15 @@ namespace YourProject.Controllers {
         // Verify Firebase token
         await VerifyFirebaseToken(token);
 
-        updatedProduct.Id = id;  // Ensure the correct product Id is retained
-
-        var product = await _productService.GetByIdAsync(id);
-        if (product == null)
+        var existingProduct = await _productService.GetByIdAsync(id);
+        if (existingProduct == null)
           return NotFound();
+
+        // ✅ Keep old image if no new image is provided
+        if (string.IsNullOrEmpty(updatedProduct.Image)) {
+          updatedProduct.Image = existingProduct.Image;
+        }
+        updatedProduct.Id = existingProduct.Id;
 
         await _productService.UpdateAsync(id, updatedProduct);
         return NoContent();
