@@ -36,6 +36,7 @@ builder.Services.AddSwaggerGen(c => {
 });
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<CategoryService>();
+builder.Services.AddSingleton<BannerService>();
 
 
 // Configure CORS policy

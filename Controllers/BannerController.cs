@@ -6,11 +6,11 @@ using FirebaseAdmin.Auth;
 namespace YourProject.Controllers {
   [ApiController]
   [Route("api/[controller]")]
-  public class ProductController : ControllerBase {
-    private readonly ProductService _productService;
+  public class BannerController : ControllerBase {
+    private readonly BannerService _bannerService;
 
-    public ProductController(ProductService productService) {
-      _productService = productService;
+    public BannerController(BannerService bannerService) {
+      _bannerService = bannerService;
     }
 
     // Verifying Firebase ID Token
@@ -23,29 +23,29 @@ namespace YourProject.Controllers {
     private async Task<bool> IsUserAuthorized(string token) {
       try {
         FirebaseToken firebaseToken = await VerifyFirebaseToken(token);
-        return firebaseToken.Claims.TryGetValue("email", out object? email) && email != null && email.ToString() == Environment.GetEnvironmentVariable("USER_EMAIL"); ;
+        return firebaseToken.Claims.TryGetValue("email", out object? email) && email != null && email.ToString() == Environment.GetEnvironmentVariable("USER_EMAIL");
       } catch (Exception) {
         return false; // Return false if token verification fails
       }
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Product>>> Get() {
-      return await _productService.GetAsync();
+    public async Task<ActionResult<List<Banner>>> Get() {
+      return await _bannerService.GetAsync();
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Product>> Get(string id) {
-      var product = await _productService.GetByIdAsync(id);
+    public async Task<ActionResult<Banner>> Get(string id) {
+      var banner = await _bannerService.GetByIdAsync(id);
 
-      if (product == null)
+      if (banner == null)
         return NotFound();
 
-      return product;
+      return banner;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromHeader(Name = "Authorization")] string? bearerToken, [FromBody] Product product) {
+    public async Task<IActionResult> Create([FromHeader(Name = "Authorization")] string? bearerToken, [FromBody] Banner banner) {
       // Check for token presence and validate
       if (bearerToken == null || !bearerToken.StartsWith("Bearer ")) {
         return Unauthorized("No token provided");
@@ -55,21 +55,21 @@ namespace YourProject.Controllers {
 
       // Verify the user's authorization (only luxoemprata1@gmail.com can create)
       if (!await IsUserAuthorized(token)) {
-        return Unauthorized("You are not authorized to create a product.");
+        return Unauthorized("You are not authorized to create a banner.");
       }
 
       try {
         // Verify Firebase token
         await VerifyFirebaseToken(token);
-        await _productService.CreateAsync(product);
-        return CreatedAtAction(nameof(Get), new { id = product.Id }, product);
+        await _bannerService.CreateAsync(banner);
+        return CreatedAtAction(nameof(Get), new { id = banner.Id }, banner);
       } catch (Exception ex) {
         return Unauthorized($"Invalid token: {ex.Message}");
       }
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, [FromHeader(Name = "Authorization")] string? bearerToken, [FromBody] Product updatedProduct) {
+    public async Task<IActionResult> Update(string id, [FromHeader(Name = "Authorization")] string? bearerToken, [FromBody] Banner updatedBanner) {
       // Check for token presence and validate
       if (bearerToken == null || !bearerToken.StartsWith("Bearer ")) {
         return Unauthorized("No token provided");
@@ -79,24 +79,23 @@ namespace YourProject.Controllers {
 
       // Verify the user's authorization (only luxoemprata1@gmail.com can update)
       if (!await IsUserAuthorized(token)) {
-        return Unauthorized("You are not authorized to update this product.");
+        return Unauthorized("You are not authorized to update this banner.");
       }
 
       try {
         // Verify Firebase token
         await VerifyFirebaseToken(token);
 
-        var existingProduct = await _productService.GetByIdAsync(id);
-        if (existingProduct == null)
+        var existingBanner = await _bannerService.GetByIdAsync(id);
+        if (existingBanner == null)
           return NotFound();
 
-        // ✅ Keep old image if no new image is provided
-        if (string.IsNullOrEmpty(updatedProduct.Image)) {
-          updatedProduct.Image = existingProduct.Image;
+        if (string.IsNullOrEmpty(updatedBanner.Image)) {
+          updatedBanner.Image = existingBanner.Image;
         }
-        updatedProduct.Id = existingProduct.Id;
+        updatedBanner.Id = existingBanner.Id;
 
-        await _productService.UpdateAsync(id, updatedProduct);
+        await _bannerService.UpdateAsync(id, updatedBanner);
         return NoContent();
       } catch (Exception ex) {
         return Unauthorized($"Invalid token: {ex.Message}");
@@ -114,30 +113,22 @@ namespace YourProject.Controllers {
 
       // Verify the user's authorization (only luxoemprata1@gmail.com can delete)
       if (!await IsUserAuthorized(token)) {
-        return Unauthorized("You are not authorized to delete this product.");
+        return Unauthorized("You are not authorized to delete this banner.");
       }
 
       try {
         // Verify Firebase token
         await VerifyFirebaseToken(token);
 
-        var product = await _productService.GetByIdAsync(id);
-        if (product == null)
+        var banner = await _bannerService.GetByIdAsync(id);
+        if (banner == null)
           return NotFound();
 
-        await _productService.DeleteAsync(id);
+        await _bannerService.DeleteAsync(id);
         return NoContent();
       } catch (Exception ex) {
         return Unauthorized($"Invalid token: {ex.Message}");
       }
     }
-
-    [HttpGet("has-category/{id}")]
-    public async Task<ActionResult<bool>> HasCategory(string id) {
-      bool exists = await _productService.AnyProductHasCategoryAsync(id);
-      return Ok(exists);
-    }
-
   }
-
 }

@@ -87,11 +87,14 @@ namespace YourProject.Controllers {
         // Verify Firebase token
         await VerifyFirebaseToken(token);
 
-        updatedCategory.Id = id;  // Ensure the correct category Id is retained
-
-        var category = await _categoryService.GetByIdAsync(id);
-        if (category == null)
+        var existingCategory = await _categoryService.GetByIdAsync(id);
+        if (existingCategory == null)
           return NotFound();
+
+        if (string.IsNullOrEmpty(updatedCategory.Image)) {
+          updatedCategory.Image = existingCategory.Image;
+        }
+        updatedCategory.Id = existingCategory.Id;
 
         await _categoryService.UpdateAsync(id, updatedCategory);
         return NoContent();
