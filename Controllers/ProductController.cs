@@ -143,7 +143,7 @@ namespace YourProject.Controllers {
       return await _productService.GetProductsByCategory(id);
     }
 
-    [HttpGet("search")]
+    [HttpGet("product-search")]
     public async Task<ActionResult<List<Product>>> Search([FromQuery] string name) {
       var products = await _productService.SearchByName(name);
       return Ok(products);
