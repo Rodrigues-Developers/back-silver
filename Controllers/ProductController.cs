@@ -138,6 +138,15 @@ namespace YourProject.Controllers {
       return Ok(exists);
     }
 
-  }
+    [HttpGet("products-category/{id}")]
+    public async Task<ActionResult<List<Product>>> GetProductsByCategory(string id) {
+      return await _productService.GetProductsByCategory(id);
+    }
 
+    [HttpGet("product-search")]
+    public async Task<ActionResult<List<Product>>> Search([FromQuery] string name) {
+      var products = await _productService.SearchByName(name);
+      return Ok(products);
+    }
+  }
 }
