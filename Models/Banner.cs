@@ -9,6 +9,9 @@ namespace YourProject.Models {
 
     [BsonElement("image")]
     public string? Image { get; set; }
+
+    [BsonElement("link")]
+    public string? Link { get; set; } = string.Empty;
   }
 }
 
