@@ -3,11 +3,14 @@ using Newtonsoft.Json;
 using YourProject.Models;
 using MongoDB.Bson;
 
-public class ProductService {
+public class ProductService
+{
   private readonly IMongoCollection<Product> _products;
 
-  public ProductService(IConfiguration config) {
-    try {
+  public ProductService(IConfiguration config)
+  {
+    try
+    {
       // Retrieve values from environment variables
       var mongoUsername = Environment.GetEnvironmentVariable("MONGO_USERNAME");
       var mongoPassword = Environment.GetEnvironmentVariable("MONGO_PASSWORD");
@@ -23,7 +26,9 @@ public class ProductService {
       _products = database.GetCollection<Product>(mongoCollection);
 
       Console.WriteLine("Connected to MongoDB successfully!");
-    } catch (Exception ex) {
+    }
+    catch (Exception ex)
+    {
       Console.WriteLine($"Failed to connect to MongoDB: {ex.Message}");
     }
   }
@@ -34,8 +39,10 @@ public class ProductService {
   public async Task<Product?> GetByIdAsync(string id) =>
       await _products.Find(p => p.Id == id).FirstOrDefaultAsync();
 
-  public async Task CreateAsync(Product product) {
-    if (string.IsNullOrEmpty(product.Id)) {
+  public async Task CreateAsync(Product product)
+  {
+    if (string.IsNullOrEmpty(product.Id))
+    {
       product.Id = ObjectId.GenerateNewId().ToString();
     }
     await _products.InsertOneAsync(product);
@@ -47,18 +54,28 @@ public class ProductService {
   public async Task DeleteAsync(string id) =>
       await _products.DeleteOneAsync(p => p.Id == id);
 
-  public async Task<bool> AnyProductHasCategoryAsync(string categoryID) {
+  public async Task<bool> AnyProductHasCategoryAsync(string categoryID)
+  {
     var filter = Builders<Product>.Filter.AnyIn(p => p.Category, new List<string> { categoryID });
     return await _products.Find(filter).AnyAsync();
   }
 
-  public async Task<List<Product>> GetProductsByCategory(string categoryID) {
+  public async Task<List<Product>> GetProductsByCategory(string categoryID)
+  {
     var filter = Builders<Product>.Filter.AnyIn(p => p.Category, new List<string> { categoryID });
     return await _products.Find(filter).ToListAsync();
   }
 
-  public async Task<List<Product>> SearchByName(string name) {
+  public async Task<List<Product>> SearchByName(string name)
+  {
     var filter = Builders<Product>.Filter.Regex(p => p.Name, new BsonRegularExpression(name, "i"));
     return await _products.Find(filter).ToListAsync();
+  }
+
+  public async Task<int> GetProductCountByCategory(string categoryID)
+  {
+    var filter = Builders<Product>.Filter.AnyIn(p => p.Category, new List<string> { categoryID });
+    long count = await _products.CountDocumentsAsync(filter);
+    return (int)count;
   }
 }
