@@ -21,7 +21,7 @@ namespace YourProject.Models {
 
 
     [BsonElement("total")]
-    public int Total { get; set; }
+    public float Total { get; set; }
   }
 
   public class CartItem {
