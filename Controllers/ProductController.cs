@@ -148,5 +148,12 @@ namespace YourProject.Controllers {
       var products = await _productService.SearchByName(name);
       return Ok(products);
     }
+
+    [HttpGet("category-count/{id}")]
+    public async Task<ActionResult<int>> GetProductCountByCategory(string id) {
+      int count = await _productService.GetProductCountByCategory(id);
+      return Ok(count);
+    }
+
   }
 }
