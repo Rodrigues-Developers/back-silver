@@ -25,11 +25,27 @@ public class OrderService {
     }
   }
 
-  public async Task<List<Order>> GetAsync() =>
-      await _orders.Find(_ => true).ToListAsync();
+  public async Task<List<Order>> GetAsync(string? sortBy = null, bool ascending = false) {
+    var filter = Builders<Order>.Filter.Empty;
 
-  public async Task<List<Order>> GetByUserIdAsync(string userId) =>
-      await _orders.Find(o => o.UserId == userId).ToListAsync();
+    if (!string.IsNullOrWhiteSpace(sortBy)) {
+      var sortDefinitionBuilder = Builders<Order>.Sort;
+      var sort = ascending ? sortDefinitionBuilder.Ascending(sortBy) : sortDefinitionBuilder.Descending(sortBy);
+      return await _orders.Find(filter).Sort(sort).ToListAsync();
+    }
+    return await _orders.Find(_ => true).ToListAsync();
+  }
+
+  public async Task<List<Order>> GetByUserIdAsync(string userId, string? sortBy = null, bool ascending = false) {
+    var filter = Builders<Order>.Filter.Empty;
+
+    if (!string.IsNullOrWhiteSpace(sortBy)) {
+      var sortDefinitionBuilder = Builders<Order>.Sort;
+      var sort = ascending ? sortDefinitionBuilder.Ascending(sortBy) : sortDefinitionBuilder.Descending(sortBy);
+      return await _orders.Find(o => o.UserId == userId).Sort(sort).ToListAsync();
+    }
+    return await _orders.Find(o => o.UserId == userId).ToListAsync();
+  }
 
   public async Task<Order?> GetByIdAsync(string id) =>
       await _orders.Find(o => o.Id == id).FirstOrDefaultAsync();
