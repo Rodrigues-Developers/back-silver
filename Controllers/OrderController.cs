@@ -135,5 +135,17 @@ namespace YourProject.Controllers {
       await _orderService.DeleteAsync(id);
       return NoContent();
     }
+    [HttpGet("top-selling")]
+    public async Task<ActionResult<List<Dictionary<string, object>>>> GetTopSellingProducts(
+     [FromQuery] int limit = 10) {
+
+      var topSellingProducts = await _orderService.GetTopSellingProducts(limit);
+
+      // Convert BsonDocument to Dictionary<string, object> for Swagger compatibility
+      var formattedProducts = topSellingProducts.Select(doc => doc.ToDictionary()).ToList();
+
+      return Ok(formattedProducts);
+    }
+
   }
 }

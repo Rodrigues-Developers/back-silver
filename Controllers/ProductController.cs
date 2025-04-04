@@ -30,9 +30,11 @@ namespace YourProject.Controllers {
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Product>>> Get() {
-      return await _productService.GetAsync();
+    public async Task<ActionResult<List<Product>>> Get([FromQuery] string? sortBy = null, [FromQuery] bool ascending = false) {
+      var products = await _productService.GetAsync(sortBy, ascending);
+      return Ok(products);
     }
+
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> Get(string id) {
