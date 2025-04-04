@@ -25,11 +25,27 @@ public class OrderService {
     }
   }
 
-  public async Task<List<Order>> GetAsync() =>
-      await _orders.Find(_ => true).ToListAsync();
+  public async Task<List<Order>> GetAsync(string? sortBy = null, bool ascending = false) {
+    var filter = Builders<Order>.Filter.Empty;
 
-  public async Task<List<Order>> GetByUserIdAsync(string userId) =>
-      await _orders.Find(o => o.UserId == userId).ToListAsync();
+    if (!string.IsNullOrWhiteSpace(sortBy)) {
+      var sortDefinitionBuilder = Builders<Order>.Sort;
+      var sort = ascending ? sortDefinitionBuilder.Ascending(sortBy) : sortDefinitionBuilder.Descending(sortBy);
+      return await _orders.Find(filter).Sort(sort).ToListAsync();
+    }
+    return await _orders.Find(filter).ToListAsync();
+  }
+
+  public async Task<List<Order>> GetByUserIdAsync(string userId, string? sortBy = null, bool ascending = false) {
+    var filter = Builders<Order>.Filter.Empty;
+
+    if (!string.IsNullOrWhiteSpace(sortBy)) {
+      var sortDefinitionBuilder = Builders<Order>.Sort;
+      var sort = ascending ? sortDefinitionBuilder.Ascending(sortBy) : sortDefinitionBuilder.Descending(sortBy);
+      return await _orders.Find(o => o.UserId == userId).Sort(sort).ToListAsync();
+    }
+    return await _orders.Find(o => o.UserId == userId).ToListAsync();
+  }
 
   public async Task<Order?> GetByIdAsync(string id) =>
       await _orders.Find(o => o.Id == id).FirstOrDefaultAsync();
@@ -46,4 +62,41 @@ public class OrderService {
 
   public async Task DeleteAsync(string id) =>
       await _orders.DeleteOneAsync(o => o.Id == id);
+
+
+  public async Task<List<BsonDocument>> GetTopSellingProducts(int limit = 10) {
+    var pipeline = new[]
+    {
+        new BsonDocument("$unwind", "$cartItems"), // Flatten cartItems array
+        new BsonDocument("$group", new BsonDocument
+        {
+            { "_id", "$cartItems.product._id" }, // Group by product ID
+            { "name", new BsonDocument("$first", "$cartItems.product.name") }, // Get product name
+            { "image", new BsonDocument("$first", "$cartItems.product.image") }, // Get product image
+            { "description", new BsonDocument("$first", "$cartItems.product.description") },
+            { "availability", new BsonDocument("$first", "$cartItems.product.availability") },
+            { "discount", new BsonDocument("$first", "$cartItems.product.discount") },
+            { "price", new BsonDocument("$first", "$cartItems.product.price") },
+            { "totalSold", new BsonDocument("$sum", "$cartItems.amount") } // Ensure sum of all amounts
+        }),
+        new BsonDocument("$sort", new BsonDocument("totalSold", -1)), // Sort by most sold
+        new BsonDocument("$limit", limit), // Limit results
+        new BsonDocument("$project", new BsonDocument // Return only necessary fields
+        {
+            { "_id", new BsonDocument("$toString", "$_id") },
+            { "name", 1 },
+            { "image", 1 },
+            { "price", 1 },
+            { "description", 1 },
+            { "availability", 1 },
+            { "discount", 1 },
+            { "totalSold", 1 },
+        })
+    };
+
+    var result = await _orders.Aggregate<BsonDocument>(pipeline).ToListAsync();
+    return result;
+  }
+
+
 }

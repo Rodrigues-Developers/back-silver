@@ -27,5 +27,8 @@ namespace YourProject.Models {
 
     [BsonElement("additionalImages")]
     public List<string>? AdditionalImages { get; set; }
+
+    [BsonElement("discount")]
+    public int? Discount { get; set; }
   }
 }

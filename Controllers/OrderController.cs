@@ -36,7 +36,7 @@ namespace YourProject.Controllers {
 
 
     [HttpGet]
-    public async Task<ActionResult<List<Order>>> GetAll([FromHeader(Name = "Authorization")] string? bearerToken) {
+    public async Task<ActionResult<List<Order>>> GetAll([FromHeader(Name = "Authorization")] string? bearerToken, [FromQuery] string? sortBy = null, [FromQuery] bool ascending = false) {
       if (bearerToken == null || !bearerToken.StartsWith("Bearer ")) {
         return Unauthorized("No token provided");
       }
@@ -52,10 +52,10 @@ namespace YourProject.Controllers {
 
       if (isAdmin) {
         // Admin sees all orders
-        orders = await _orderService.GetAsync();
+        orders = await _orderService.GetAsync(sortBy, ascending);
       } else {
         // Regular user only sees their own orders
-        orders = await _orderService.GetByUserIdAsync(userId);
+        orders = await _orderService.GetByUserIdAsync(userId, sortBy, ascending);
       }
 
       return Ok(orders);
@@ -135,5 +135,17 @@ namespace YourProject.Controllers {
       await _orderService.DeleteAsync(id);
       return NoContent();
     }
+    [HttpGet("top-selling")]
+    public async Task<ActionResult<List<Dictionary<string, object>>>> GetTopSellingProducts(
+     [FromQuery] int limit = 10) {
+
+      var topSellingProducts = await _orderService.GetTopSellingProducts(limit);
+
+      // Convert BsonDocument to Dictionary<string, object> for Swagger compatibility
+      var formattedProducts = topSellingProducts.Select(doc => doc.ToDictionary()).ToList();
+
+      return Ok(formattedProducts);
+    }
+
   }
 }
