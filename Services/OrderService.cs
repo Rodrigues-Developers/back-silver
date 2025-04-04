@@ -33,7 +33,7 @@ public class OrderService {
       var sort = ascending ? sortDefinitionBuilder.Ascending(sortBy) : sortDefinitionBuilder.Descending(sortBy);
       return await _orders.Find(filter).Sort(sort).ToListAsync();
     }
-    return await _orders.Find(_ => true).ToListAsync();
+    return await _orders.Find(filter).ToListAsync();
   }
 
   public async Task<List<Order>> GetByUserIdAsync(string userId, string? sortBy = null, bool ascending = false) {
